@@ -1,0 +1,150 @@
+<!--
+  ============================================================
+  DANSLEBUENO — _navbar.html (fragment réutilisable)
+  À inclure via PHP : <?php include 'includes/_navbar.php'; ?>
+  ============================================================
+  VARIABLES PHP à remplacer :
+    $is_logged_in     → booléen (session active ou non)
+    $user_pseudo      → prénom / pseudo de l'utilisateur connecté
+    $nb_msg_unread    → nombre de messages non lus (badge)
+  ============================================================
+-->
+<nav class="navbar navbar-expand-lg navbar-danslebueno fixed-top">
+  <div class="container-xl d-flex align-items-center gap-3">
+
+    <!-- ① LOGO -->
+    <a href="index.html" class="navbar-brand me-0 me-lg-3 flex-shrink-0">
+      <span class="logo-text">
+        <span class="logo-dans">dans</span><span class="logo-le">le</span><span class="logo-bueno">bueno</span>
+      </span>
+    </a>
+
+    <!-- ② BARRE DE RECHERCHE (centrale, cachée sur mobile) -->
+    <!--
+      PHP : l'attribut value reçoit htmlspecialchars($_GET['q'] ?? '')
+            pour ré-afficher le terme de recherche
+    -->
+    <div class="search-bar-wrapper d-none d-md-flex flex-grow-1">
+      <div class="input-group w-100">
+        <input
+          type="search"
+          class="form-control"
+          placeholder="Rechercher une annonce…"
+          aria-label="Recherche"
+          name="q"
+          value=""
+        />
+        <!-- PHP value="<?= htmlspecialchars($_GET['q'] ?? '') ?>" -->
+        <button class="btn-search" type="submit" aria-label="Lancer la recherche">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- ③ BOUTON TOGGLE MOBILE -->
+    <button
+      class="navbar-toggler border-0 ms-auto"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarMenu"
+      aria-controls="navbarMenu"
+      aria-expanded="false"
+      aria-label="Menu"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- ④ PARTIE DROITE : bouton déposer + icônes compte -->
+    <div class="collapse navbar-collapse flex-grow-0" id="navbarMenu">
+
+      <!-- Barre de recherche visible uniquement sur mobile (dans le menu déroulant) -->
+      <div class="search-bar-wrapper d-md-none my-2 w-100">
+        <div class="input-group w-100">
+          <input type="search" class="form-control" placeholder="Rechercher…" name="q" />
+          <button class="btn-search" type="submit"><i class="bi bi-search"></i></button>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center gap-2 gap-lg-3 mt-2 mt-lg-0">
+
+        <!-- Bouton Déposer une annonce -->
+        <a href="deposer-annonce.html" class="btn btn-deposer flex-shrink-0">
+          <i class="bi bi-plus-lg me-1"></i>Déposer
+        </a>
+
+        <!-- ── SI L'UTILISATEUR EST CONNECTÉ ──────────────────────── -->
+        <!-- PHP: if ($is_logged_in): -->
+
+        <!-- Messagerie avec badge -->
+        <a href="messagerie.html" class="nav-icon-link position-relative">
+          <i class="bi bi-chat-dots"></i>
+          <!-- Badge messages non lus : affiché si $nb_msg_unread > 0 -->
+          <!-- PHP: if ($nb_msg_unread > 0): -->
+          <span class="badge-unread position-absolute" style="top:-6px;right:-6px;">3</span>
+          <!-- PHP: endif; -->
+          <span>Messages</span>
+        </a>
+
+        <!-- Mon compte (dropdown) -->
+        <div class="dropdown">
+          <a
+            href="#"
+            class="nav-icon-link"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            id="menuCompte"
+          >
+            <i class="bi bi-person-circle"></i>
+            <!-- PHP: echo htmlspecialchars($user_pseudo) -->
+            <span>Marie</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3 mt-1" aria-labelledby="menuCompte">
+            <li>
+              <a class="dropdown-item" href="profil.html">
+                <i class="bi bi-person me-2 text-muted"></i>Mon profil
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="profil.html#mes-annonces">
+                <i class="bi bi-tag me-2 text-muted"></i>Mes annonces
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="profil.html#mes-favoris">
+                <i class="bi bi-heart me-2 text-muted"></i>Mes favoris
+              </a>
+            </li>
+
+            <!-- PHP: if ($is_admin): -->
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a class="dropdown-item text-warning fw-bold" href="admin.html">
+                <i class="bi bi-shield-lock me-2"></i>Administration
+              </a>
+            </li>
+            <!-- PHP: endif; -->
+
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <!-- PHP: action="logout.php" -->
+              <a class="dropdown-item text-danger" href="logout.php">
+                <i class="bi bi-box-arrow-right me-2"></i>Déconnexion
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- PHP: else: (utilisateur NON connecté) -->
+        <!--
+        <a href="auth.html" class="nav-icon-link">
+          <i class="bi bi-person"></i>
+          <span>Connexion</span>
+        </a>
+        -->
+        <!-- PHP: endif; -->
+
+      </div>
+    </div><!-- /collapse -->
+
+  </div><!-- /container -->
+</nav>

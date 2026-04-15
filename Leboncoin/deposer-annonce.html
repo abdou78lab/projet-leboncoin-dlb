@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Déposer une annonce – DansLeBueno</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-danslebueno fixed-top">
+  <div class="container-xl d-flex align-items-center gap-3">
+    <a href="index.html" class="navbar-brand me-lg-3 flex-shrink-0">
+      <span class="logo-text">
+        <span class="logo-dans">dans</span><span class="logo-le">le</span><span class="logo-bueno">bueno</span>
+      </span>
+    </a>
+    <div class="d-flex align-items-center gap-2 ms-auto">
+      <a href="profil.html" class="nav-icon-link">
+        <i class="bi bi-person-circle"></i><span>Marie</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO BANDEAU -->
+<section class="page-hero">
+  <div class="container-xl">
+    <nav aria-label="breadcrumb" class="mb-1">
+      <ol class="breadcrumb mb-0" style="font-size:.82rem;">
+        <li class="breadcrumb-item"><a href="index.html">Accueil</a></li>
+        <li class="breadcrumb-item active">Déposer une annonce</li>
+      </ol>
+    </nav>
+    <h1 class="mb-0">Déposer une annonce</h1>
+  </div>
+</section>
+
+<!-- ============================================================
+     FORMULAIRE DÉPOSER ANNONCE
+     PHP: <form action="deposer-annonce.php" method="POST" enctype="multipart/form-data">
+     enctype multipart/form-data OBLIGATOIRE pour l'upload de fichier.
+     ============================================================ -->
+<div class="container-xl pb-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8 col-xl-7">
+
+      <!--
+        PHP : Afficher les erreurs de validation globales si isset($erreurs):
+        <div class="alert alert-danger">
+          <ul class="mb-0">foreach ($erreurs as $e) echo "<li>$e</li>"; endforeach;</ul>
+        </div>
+      -->
+
+      <!-- Étape 1 : Informations principales -->
+      <div class="form-card mb-4">
+        <h2 class="section-title mb-4">
+          <span class="d-inline-flex align-items-center justify-content-center rounded-circle me-2"
+            style="width:28px;height:28px;background:var(--color-orange);color:#fff;font-size:.85rem;font-family:var(--font-display);font-weight:900;">1</span>
+          Informations principales
+        </h2>
+
+        <!-- Titre -->
+        <div class="mb-4">
+          <label for="titre" class="form-label">
+            Titre de l'annonce <span class="text-danger">*</span>
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            id="titre"
+            name="titre"
+            placeholder="Ex : Casque audio Sony – excellent état"
+            required
+            maxlength="120"
+            <!-- PHP: value="<?= htmlspecialchars($_POST['titre'] ?? '') ?>" -->
+          />
+          <div class="form-text d-flex justify-content-between">
+            <span>Soyez précis : modèle, marque, caractéristiques importantes.</span>
+            <span id="titreCount" class="text-muted">0 / 120</span>
+          </div>
+        </div>
+
+        <!-- Prix -->
+        <div class="mb-4">
+          <label for="prix" class="form-label">
+            Prix <span class="text-danger">*</span>
+          </label>
+          <div class="input-group">
+            <input
+              type="number"
+              class="form-control"
+              id="prix"
+              name="prix"
+              placeholder="0"
+              min="0"
+              max="999999"
+              step="1"
+              required
+              <!-- PHP: value="<?= htmlspecialchars($_POST['prix'] ?? '') ?>" -->
+            />
+            <span class="input-group-text fw-bold">€</span>
+          </div>
+          <div class="form-text">Entrez 0 pour proposer le bien gratuitement.</div>
+        </div>
+
+        <!-- État du bien -->
+        <div class="mb-4">
+          <label class="form-label">
+            État du bien <span class="text-danger">*</span>
+          </label>
+          <!--
+            PHP: les options reçoivent selected="selected" selon $_POST['etat']
+          -->
+          <div class="d-flex gap-2 flex-wrap">
+            <!-- Option Neuf -->
+            <input type="radio" class="btn-check" name="etat" id="etat-neuf" value="neuf" required />
+            <label class="btn btn-outline-success rounded-pill" for="etat-neuf">
+              <i class="bi bi-star me-1"></i>Neuf
+            </label>
+            <!-- Option Bon état -->
+            <input type="radio" class="btn-check" name="etat" id="etat-bon" value="bon" />
+            <label class="btn btn-outline-primary rounded-pill" for="etat-bon">
+              <i class="bi bi-check-circle me-1"></i>Bon état
+            </label>
+            <!-- Option Correct -->
+            <input type="radio" class="btn-check" name="etat" id="etat-correct" value="correct" />
+            <label class="btn btn-outline-warning rounded-pill" for="etat-correct">
+              <i class="bi bi-exclamation-circle me-1"></i>Correct
+            </label>
+          </div>
+          <div class="form-text mt-2">
+            <strong>Neuf</strong> : jamais utilisé. <strong>Bon état</strong> : peu de traces d'usure. <strong>Correct</strong> : quelques défauts visibles.
+          </div>
+        </div>
+
+      </div><!-- /form-card 1 -->
+
+      <!-- Étape 2 : Description -->
+      <div class="form-card mb-4">
+        <h2 class="section-title mb-4">
+          <span class="d-inline-flex align-items-center justify-content-center rounded-circle me-2"
+            style="width:28px;height:28px;background:var(--color-orange);color:#fff;font-size:.85rem;font-family:var(--font-display);font-weight:900;">2</span>
+          Description
+        </h2>
+
+        <div class="mb-1">
+          <label for="description" class="form-label">
+            Description détaillée <span class="text-danger">*</span>
+          </label>
+          <textarea
+            class="form-control"
+            id="description"
+            name="description"
+            rows="7"
+            placeholder="Décrivez votre article : dimensions, couleur, historique, défauts éventuels, accessoires inclus, modalités de remise…"
+            required
+            maxlength="2000"
+            style="resize:vertical;"
+            <!-- PHP: echo htmlspecialchars($_POST['description'] ?? '') -->
+          ></textarea>
+          <div class="form-text d-flex justify-content-between">
+            <span>Minimum 20 caractères.</span>
+            <span id="descCount" class="text-muted">0 / 2000</span>
+          </div>
+        </div>
+      </div><!-- /form-card 2 -->
+
+      <!-- Étape 3 : Photo -->
+      <div class="form-card mb-4">
+        <h2 class="section-title mb-4">
+          <span class="d-inline-flex align-items-center justify-content-center rounded-circle me-2"
+            style="width:28px;height:28px;background:var(--color-orange);color:#fff;font-size:.85rem;font-family:var(--font-display);font-weight:900;">3</span>
+          Photo
+        </h2>
+
+        <!--
+          UPLOAD SÉCURISÉ — Contraintes PHP côté serveur à implémenter :
+          - Extensions autorisées : ['jpg', 'jpeg', 'png', 'webp']
+          - Taille max : 5 Mo (5 242 880 octets)
+          - Renommage : uniqid() . '.' . extension (ne pas garder le nom original)
+          - Stockage dans : /uploads/ (hors webroot idéalement)
+          - Vérification avec mime_content_type() ou exif_imagetype()
+        -->
+
+        <!-- Zone drag & drop (apparence, l'input reste accessible) -->
+        <label for="image" class="upload-zone d-block" id="uploadZone">
+          <i class="bi bi-cloud-arrow-up"></i>
+          <p class="mt-2 mb-1 fw-bold" style="color:var(--color-neutral-700);">
+            Cliquez ou glissez une image ici
+          </p>
+          <p>JPG, PNG, WEBP — 5 Mo max</p>
+          <!-- Prévisualisation -->
+          <img
+            id="previewImg"
+            src=""
+            alt="Prévisualisation"
+            class="d-none mt-3 rounded-3"
+            style="max-height:220px;max-width:100%;object-fit:contain;"
+          />
+        </label>
+
+        <!-- Input fichier masqué (lié au label ci-dessus) -->
+        <input
+          type="file"
+          class="d-none"
+          id="image"
+          name="image"
+          accept=".jpg,.jpeg,.png,.webp"
+        />
+
+        <!--
+          PHP : Si modification d'une annonce existante, afficher l'image actuelle :
+          <div class="mt-2">
+            <small class="text-muted">Image actuelle :</small>
+            <img src="uploads/<?= $annonce['image'] ?>" style="max-height:80px;" />
+            <div class="form-check mt-1">
+              <input class="form-check-input" type="checkbox" name="supprimer_image" id="suppImg" />
+              <label class="form-check-label" for="suppImg" style="font-size:.82rem;">Supprimer l'image</label>
+            </div>
+          </div>
+        -->
+
+      </div><!-- /form-card 3 -->
+
+      <!-- Boutons d'action -->
+      <div class="d-flex gap-3 align-items-center">
+        <!-- CSRF -->
+        <!-- PHP: <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>"> -->
+        <input type="hidden" name="csrf_token" value="[TOKEN_PHP]" />
+        <!-- PHP: Si modification : <input type="hidden" name="id" value="<?= $annonce['id'] ?>"> -->
+
+        <button type="submit" class="btn btn-primary-orange px-4 py-2">
+          <i class="bi bi-send me-2"></i>Publier l'annonce
+        </button>
+        <a href="profil.html" class="btn btn-link text-muted">Annuler</a>
+      </div>
+
+    </div><!-- /col -->
+  </div><!-- /row -->
+</div><!-- /container -->
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="container-xl">
+    <div class="footer-divider mt-0"></div>
+    <p class="text-center mb-0" style="font-size:.8rem;">&copy; 2024 DansLeBueno – Projet étudiant.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // ── Compteur de caractères ────────────────────────────────────
+  function attachCounter(inputId, counterId) {
+    const el = document.getElementById(inputId);
+    const counter = document.getElementById(counterId);
+    el.addEventListener('input', () => {
+      counter.textContent = `${el.value.length} / ${el.maxLength}`;
+    });
+  }
+  attachCounter('titre', 'titreCount');
+  attachCounter('description', 'descCount');
+
+  // ── Prévisualisation image ────────────────────────────────────
+  document.getElementById('image').addEventListener('change', function () {
+    const file = this.files[0];
+    if (!file) return;
+
+    // Validation taille côté client (double check, le PHP reste maître)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('L\'image ne doit pas dépasser 5 Mo.');
+      this.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = e => {
+      const preview = document.getElementById('previewImg');
+      preview.src = e.target.result;
+      preview.classList.remove('d-none');
+      // Mettre à jour le texte de la zone
+      document.querySelector('#uploadZone p:first-of-type').textContent = file.name;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // ── Drag & drop visuel ────────────────────────────────────────
+  const zone = document.getElementById('uploadZone');
+  ['dragover', 'dragenter'].forEach(evt => {
+    zone.addEventListener(evt, e => {
+      e.preventDefault();
+      zone.style.borderColor = 'var(--color-sky)';
+      zone.style.background  = 'var(--color-sky-light)';
+    });
+  });
+  ['dragleave', 'drop'].forEach(evt => {
+    zone.addEventListener(evt, e => {
+      e.preventDefault();
+      zone.style.borderColor = '';
+      zone.style.background  = '';
+      if (evt === 'drop' && e.dataTransfer.files.length) {
+        document.getElementById('image').files = e.dataTransfer.files;
+        document.getElementById('image').dispatchEvent(new Event('change'));
+      }
+    });
+  });
+</script>
+</body>
+</html>
