@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dernières annonces – DansLeBueno</title>
+
+  <!-- Bootstrap 5.3 CSS -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+  />
+  <!-- Bootstrap Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+  />
+  <!-- Google Fonts : Nunito (display) + Inter (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <!-- CSS personnalisé -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ============================================================
+     NAVBAR (fragment réutilisable)
+     PHP : <?php include 'includes/navbar.php'; ?>
+     ============================================================ -->
+<nav class="navbar navbar-expand-lg navbar-danslebueno fixed-top">
+  <div class="container-xl d-flex align-items-center gap-3">
+    <a href="index.html" class="navbar-brand me-lg-3 flex-shrink-0">
+      <span class="logo-text">
+        <span class="logo-dans">dans</span><span class="logo-le">le</span><span class="logo-bueno">bueno</span>
+      </span>
+    </a>
+
+    <!-- Barre recherche (desktop) — wrapped dans un <form> en PHP -->
+    <div class="search-bar-wrapper d-none d-md-flex flex-grow-1">
+      <div class="input-group w-100">
+        <!-- PHP: <form action="index.php" method="GET"> -->
+        <input
+          type="search"
+          class="form-control"
+          placeholder="Rechercher une annonce…"
+          name="q"
+          value=""
+          <!-- PHP: value="<?= htmlspecialchars($_GET['q'] ?? '') ?>" -->
+        />
+        <button class="btn-search" type="submit" aria-label="Rechercher">
+          <i class="bi bi-search"></i>
+        </button>
+        <!-- PHP: </form> -->
+      </div>
+    </div>
+
+    <button class="navbar-toggler border-0 ms-auto" type="button"
+      data-bs-toggle="collapse" data-bs-target="#navMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse flex-grow-0" id="navMain">
+      <!-- Recherche mobile -->
+      <div class="search-bar-wrapper d-md-none my-2 w-100">
+        <div class="input-group w-100">
+          <input type="search" class="form-control" placeholder="Rechercher…" />
+          <button class="btn-search" type="submit"><i class="bi bi-search"></i></button>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center gap-2 gap-lg-3 mt-2 mt-lg-0">
+        <a href="deposer-annonce.html" class="btn btn-deposer">
+          <i class="bi bi-plus-lg me-1"></i>Déposer
+        </a>
+        <!-- PHP: if ($is_logged_in): -->
+        <a href="messagerie.html" class="nav-icon-link position-relative">
+          <i class="bi bi-chat-dots"></i>
+          <span class="badge-unread position-absolute" style="top:-6px;right:-6px;">2</span>
+          <span>Messages</span>
+        </a>
+        <div class="dropdown">
+          <a href="#" class="nav-icon-link" data-bs-toggle="dropdown">
+            <i class="bi bi-person-circle"></i>
+            <!-- PHP: echo htmlspecialchars($user_pseudo) -->
+            <span>Marie</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3 mt-1">
+            <li><a class="dropdown-item" href="profil.html"><i class="bi bi-person me-2 text-muted"></i>Mon profil</a></li>
+            <li><a class="dropdown-item" href="profil.html"><i class="bi bi-tag me-2 text-muted"></i>Mes annonces</a></li>
+            <li><a class="dropdown-item" href="profil.html"><i class="bi bi-heart me-2 text-muted"></i>Mes favoris</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-right me-2"></i>Déconnexion</a></li>
+          </ul>
+        </div>
+        <!-- PHP: else: -->
+        <!-- <a href="auth.html" class="nav-icon-link"><i class="bi bi-person"></i><span>Connexion</span></a> -->
+        <!-- PHP: endif; -->
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================================
+     HERO / BANDEAU D'ACCUEIL
+     ============================================================ -->
+<section class="page-hero">
+  <div class="container-xl">
+    <!-- Fil d'ariane (optionnel) -->
+    <nav aria-label="breadcrumb" class="mb-1">
+      <ol class="breadcrumb mb-0" style="font-size:.82rem;">
+        <li class="breadcrumb-item active" aria-current="page">Accueil</li>
+      </ol>
+    </nav>
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+      <h1 class="mb-0">Dernières annonces</h1>
+      <!-- Compteur résultats PHP: echo $nb_annonces; -->
+      <span class="text-muted" style="font-size:.88rem;">
+        <!-- PHP: echo $nb_annonces . " annonce(s) trouvée(s)"; -->
+        128 annonces
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     LAYOUT PRINCIPAL : FILTRES (gauche) + GRILLE ANNONCES (droite)
+     ============================================================ -->
+<div class="container-xl">
+  <div class="row g-4">
+
+    <!-- ── COLONNE FILTRES (desktop) ──────────────────────────── -->
+    <!--
+      Sur mobile, les filtres sont dans un offcanvas Bootstrap.
+      Sur desktop, colonne fixe à gauche.
+    -->
+    <aside class="col-lg-3 d-none d-lg-block">
+      <div class="bg-white rounded-3 shadow-sm p-3 mb-3">
+        <h6 class="fw-bold mb-3" style="font-family:var(--font-display);">Filtrer par</h6>
+
+        <!-- Filtre état -->
+        <div class="mb-3">
+          <label class="form-label">État du bien</label>
+          <!-- PHP: ces valeurs sont cochées si $_GET['etat'] correspond -->
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="f-neuf" name="etat[]" value="neuf" />
+            <label class="form-check-label" for="f-neuf">Neuf</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="f-bon" name="etat[]" value="bon" />
+            <label class="form-check-label" for="f-bon">Bon état</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="f-correct" name="etat[]" value="correct" />
+            <label class="form-check-label" for="f-correct">Correct</label>
+          </div>
+        </div>
+
+        <!-- Filtre prix -->
+        <div class="mb-3">
+          <label class="form-label">Prix maximum</label>
+          <div class="input-group input-group-sm">
+            <input type="number" class="form-control" placeholder="Ex : 500" name="prix_max" min="0" />
+            <span class="input-group-text">€</span>
+          </div>
+        </div>
+
+        <button class="btn btn-primary-orange w-100 btn-sm">Appliquer</button>
+        <a href="index.html" class="btn btn-link btn-sm w-100 mt-1 text-muted">Réinitialiser</a>
+      </div>
+    </aside>
+
+    <!-- ── COLONNE GRILLE ANNONCES ─────────────────────────────── -->
+    <main class="col-12 col-lg-9">
+
+      <!-- Bouton filtres mobile -->
+      <div class="d-lg-none mb-3">
+        <button class="btn btn-outline-secondary btn-sm rounded-pill"
+          data-bs-toggle="offcanvas" data-bs-target="#filtresOffcanvas">
+          <i class="bi bi-sliders me-1"></i>Filtres
+        </button>
+      </div>
+
+      <!--
+        ┌─────────────────────────────────────────────────────────┐
+        │  PHP : BOUCLE PRINCIPALE SUR LES ANNONCES               │
+        │                                                          │
+        │  foreach ($annonces as $a) :                             │
+        │    // $a['id'], $a['titre'], $a['prix'], $a['etat']      │
+        │    // $a['description'], $a['image'], $a['created_at']   │
+        │    // $a['is_favori'] (bool, si connecté)                │
+        └─────────────────────────────────────────────────────────┘
+      -->
+
+      <!-- Grille Bootstrap : 1 col mobile / 2 tablette / 3 desktop -->
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 g-3">
+
+        <!-- ── CARD ANNONCE (répéter via PHP foreach) ────────── -->
+        <!--
+          PHP href: "detail-annonce.php?id=<?= $a['id'] ?>"
+          PHP src image: "uploads/<?= htmlspecialchars($a['image']) ?>"
+          PHP titre: <?= htmlspecialchars($a['titre']) ?>
+          PHP prix: <?= number_format($a['prix'], 0, ',', ' ') ?>
+          PHP etat: <?= htmlspecialchars($a['etat']) ?>
+        -->
+
+        <!-- ANNONCE 1 -->
+        <div class="col">
+          <div class="annonce-card h-100">
+            <a href="detail-annonce.html">
+              <!-- Image : remplacer src et alt par PHP -->
+              <img
+                src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=220&fit=crop"
+                alt="Casque audio Sony"
+                class="card-img-top"
+              />
+            </a>
+            <div class="card-body d-flex flex-column gap-2">
+              <!-- Titre -->
+              <a href="detail-annonce.html" class="card-title text-decoration-none text-dark">
+                Casque Audio Sony WH-1000XM5 – Comme neuf
+              </a>
+              <!-- Ligne prix + état -->
+              <div class="d-flex align-items-center justify-content-between">
+                <span class="annonce-price">250 €</span>
+                <span class="badge-etat neuf">Neuf</span>
+              </div>
+              <!-- Pied : date + favori -->
+              <div class="d-flex align-items-center justify-content-between mt-auto pt-1"
+                style="border-top:1px solid var(--color-neutral-100);">
+                <small class="text-muted">Il y a 2h · Paris</small>
+                <!--
+                  PHP : class="btn-favori <?= $a['is_favori'] ? 'active' : '' ?>"
+                        data-id="<?= $a['id'] ?>"
+                -->
+                <button class="btn-favori" aria-label="Ajouter aux favoris">
+                  <i class="bi bi-heart-fill"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ANNONCE 2 -->
+        <div class="col">
+          <div class="annonce-card h-100">
+            <a href="detail-annonce.html">
+              <img
+                src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400&h=220&fit=crop"
+                alt="Appareil photo"
+                class="card-img-top"
+              />
+            </a>
+            <div class="card-body d-flex flex-column gap-2">
+              <a href="detail-annonce.html" class="card-title text-decoration-none text-dark">
+                Appareil photo Canon EOS M50 + objectif 15-45mm
+              </a>
+              <div class="d-flex align-items-center justify-content-between">
+                <span class="annonce-price">380 €</span>
+                <span class="badge-etat bon">Bon état</span>
+              </div>
+              <div class="d-flex align-items-center justify-content-between mt-auto pt-1"
+                style="border-top:1px solid var(--color-neutral-100);">
+                <small class="text-muted">Hier · Lyon</small>
+                <button class="btn-favori active" aria-label="Retirer des favoris">
+                  <i class="bi bi-heart-fill"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ANNONCE 3 -->
+        <div class="col">
+          <div class="annonce-card h-100">
+            <a href="detail-annonce.html">
+              <img
+                src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=220&fit=crop"
+                alt="Canapé gris"
+                class="card-img-top"
+              />
+            </a>
+            <div class="card-body d-flex flex-column gap-2">
+              <a href="detail-annonce.html" class="card-title text-decoration-none text-dark">
+                Canapé 3 places gris anthracite – très bon état
+              </a>
+              <div class="d-flex align-items-center justify-content-between">
+                <span class="annonce-price">120 €</span>
+                <span class="badge-etat bon">Bon état</span>
+              </div>
+              <div class="d-flex align-items-center justify-content-between mt-auto pt-1"
+                style="border-top:1px solid var(--color-neutral-100);">
+                <small class="text-muted">Il y a 3j · Marseille</small>
+                <button class="btn-favori" aria-label="Ajouter aux favoris">
+                  <i class="bi bi-heart-fill"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ANNONCE 4 -->
+        <div class="col">
+          <div class="annonce-card h-100">
+            <a href="detail-annonce.html">
+              <img
+                src="https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=400&h=220&fit=crop"
+                alt="MacBook Pro"
+                class="card-img-top"
+              />
+            </a>
+            <div class="card-body d-flex flex-column gap-2">
+              <a href="detail-annonce.html" class="card-title text-decoration-none text-dark">
+                MacBook Pro 14" M1 Pro – 16 Go RAM, 512 Go SSD
+              </a>
+              <div class="d-flex align-items-center justify-content-between">
+                <span class="annonce-price">1 450 €</span>
+                <span class="badge-etat bon">Bon état</span>
+              </div>
+              <div class="d-flex align-items-center justify-content-between mt-auto pt-1"
+                style="border-top:1px solid var(--color-neutral-100);">
+                <small class="text-muted">Il y a 5h · Bordeaux</small>
+                <button class="btn-favori" aria-label="Ajouter aux favoris">
+                  <i class="bi bi-heart-fill"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ANNONCE 5 -->
+        <div class="col">
+          <div class="annonce-card h-100">
+            <a href="detail-annonce.html">
+              <img
+                src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=220&fit=crop"
+                alt="Livres"
+                class="card-img-top"
+              />
+            </a>
+            <div class="card-body d-flex flex-column gap-2">
+              <a href="detail-annonce.html" class="card-title text-decoration-none text-dark">
+                Lot de 20 romans policiers – Agatha Christie, Karin Slaughter
+              </a>
+              <div class="d-flex align-items-center justify-content-between">
+                <span class="annonce-price">15 €</span>
+                <span class="badge-etat correct">Correct</span>
+              </div>
+              <div class="d-flex align-items-center justify-content-between mt-auto pt-1"
+                style="border-top:1px solid var(--color-neutral-100);">
+                <small class="text-muted">Il y a 1j · Nantes</small>
+                <button class="btn-favori" aria-label="Ajouter aux favoris">
+                  <i class="bi bi-heart-fill"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ANNONCE 6 -->
+        <div class="col">
+          <div class="annonce-card h-100">
+            <a href="detail-annonce.html">
+              <!-- Annonce sans image : affiche le placeholder -->
+              <div class="img-placeholder">
+                <i class="bi bi-image"></i>
+              </div>
+            </a>
+            <div class="card-body d-flex flex-column gap-2">
+              <a href="detail-annonce.html" class="card-title text-decoration-none text-dark">
+                Vélo de route Decathlon Triban RC500 – taille M
+              </a>
+              <div class="d-flex align-items-center justify-content-between">
+                <span class="annonce-price">350 €</span>
+                <span class="badge-etat bon">Bon état</span>
+              </div>
+              <div class="d-flex align-items-center justify-content-between mt-auto pt-1"
+                style="border-top:1px solid var(--color-neutral-100);">
+                <small class="text-muted">Il y a 2j · Toulouse</small>
+                <button class="btn-favori" aria-label="Ajouter aux favoris">
+                  <i class="bi bi-heart-fill"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /row annonces -->
+
+      <!-- PHP : endforeach; -->
+
+      <!-- ── ÉTAT VIDE (affiché si aucune annonce trouvée) ──── -->
+      <!--
+        PHP: if (empty($annonces)):
+      -->
+      <!--
+      <div class="empty-state">
+        <i class="bi bi-search"></i>
+        <h5>Aucune annonce trouvée</h5>
+        <p>Essayez avec d'autres mots-clés ou modifiez vos filtres.</p>
+      </div>
+      -->
+      <!-- PHP: endif; -->
+
+      <!-- ── PAGINATION ─────────────────────────────────────── -->
+      <!--
+        PHP : générer la pagination dynamique
+        Variables : $page_courante, $nb_pages_total
+      -->
+      <nav class="mt-4 d-flex justify-content-center" aria-label="Pagination des annonces">
+        <ul class="pagination">
+          <!-- PHP : afficher si $page_courante > 1 -->
+          <li class="page-item">
+            <a class="page-link" href="?page=1" aria-label="Précédent">
+              <i class="bi bi-chevron-left"></i>
+            </a>
+          </li>
+          <!-- PHP : foreach pages -->
+          <li class="page-item active"><a class="page-link" href="?page=1">1</a></li>
+          <li class="page-item"><a class="page-link" href="?page=2">2</a></li>
+          <li class="page-item"><a class="page-link" href="?page=3">3</a></li>
+          <!-- PHP : endforeach -->
+          <li class="page-item">
+            <a class="page-link" href="?page=2" aria-label="Suivant">
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+    </main><!-- /col annonces -->
+  </div><!-- /row layout -->
+</div><!-- /container -->
+
+<!-- ── OFFCANVAS FILTRES (mobile) ───────────────────────────── -->
+<div class="offcanvas offcanvas-start" id="filtresOffcanvas" aria-labelledby="filtresOffcanvasLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title fw-bold" id="filtresOffcanvasLabel">Filtrer par</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class="mb-3">
+      <label class="form-label">État du bien</label>
+      <div class="form-check"><input class="form-check-input" type="checkbox" id="f2-neuf" /><label class="form-check-label" for="f2-neuf">Neuf</label></div>
+      <div class="form-check"><input class="form-check-input" type="checkbox" id="f2-bon" /><label class="form-check-label" for="f2-bon">Bon état</label></div>
+      <div class="form-check"><input class="form-check-input" type="checkbox" id="f2-correct" /><label class="form-check-label" for="f2-correct">Correct</label></div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Prix maximum</label>
+      <div class="input-group input-group-sm">
+        <input type="number" class="form-control" placeholder="Ex : 500" min="0" />
+        <span class="input-group-text">€</span>
+      </div>
+    </div>
+    <button class="btn btn-primary-orange w-100">Appliquer</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="site-footer">
+  <div class="container-xl">
+    <div class="row g-4">
+      <div class="col-12 col-md-4">
+        <div class="footer-brand mb-2">
+          <span style="color:#fff;">dans</span><span style="color:var(--color-sky);">le</span><span style="color:var(--color-orange);">bueno</span>
+        </div>
+        <p class="mb-0" style="font-size:.84rem;">La petite annonce entre particuliers, simple et rapide.</p>
+      </div>
+      <div class="col-6 col-md-2">
+        <h6 class="text-white fw-bold mb-2" style="font-size:.85rem;">Annonces</h6>
+        <ul class="list-unstyled mb-0">
+          <li><a href="deposer-annonce.html">Déposer une annonce</a></li>
+          <li><a href="index.html">Toutes les annonces</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-md-2">
+        <h6 class="text-white fw-bold mb-2" style="font-size:.85rem;">Mon compte</h6>
+        <ul class="list-unstyled mb-0">
+          <li><a href="auth.html">Connexion</a></li>
+          <li><a href="auth.html">Inscription</a></li>
+          <li><a href="profil.html">Mon profil</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-md-2">
+        <h6 class="text-white fw-bold mb-2" style="font-size:.85rem;">Aide</h6>
+        <ul class="list-unstyled mb-0">
+          <li><a href="#">Conditions d'utilisation</a></li>
+          <li><a href="#">Confidentialité</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-divider"></div>
+    <p class="text-center mb-0" style="font-size:.8rem;">
+      &copy; 2024 DansLeBueno – Projet étudiant. Tous droits réservés.
+    </p>
+  </div>
+</footer>
+
+<!-- Bootstrap JS Bundle (inclut Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

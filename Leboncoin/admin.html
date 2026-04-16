@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Administration – DansLeBueno</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<!--
+  ============================================================
+  PAGE ADMINISTRATION — Accessible seulement si $user['role'] === 'admin'
+  PHP: if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+         header('Location: index.php');
+         exit;
+       }
+  ============================================================
+-->
+
+<!-- NAVBAR ADMIN (simplifiée) -->
+<nav class="navbar navbar-danslebueno fixed-top">
+  <div class="container-fluid px-3 px-lg-4 d-flex align-items-center">
+    <a href="index.html" class="navbar-brand me-3">
+      <span class="logo-text">
+        <span class="logo-dans">dans</span><span class="logo-le">le</span><span class="logo-bueno">bueno</span>
+      </span>
+    </a>
+    <span class="badge rounded-pill ms-1" style="background:var(--color-orange);font-size:.75rem;padding:.3rem .7rem;">
+      <i class="bi bi-shield-lock me-1"></i>Admin
+    </span>
+    <div class="ms-auto d-flex align-items-center gap-3">
+      <a href="index.html" class="text-muted" style="font-size:.85rem;">
+        <i class="bi bi-box-arrow-left me-1"></i>Retour au site
+      </a>
+      <!-- PHP: echo htmlspecialchars($_SESSION['pseudo']) -->
+      <a href="profil.html" class="nav-icon-link">
+        <i class="bi bi-person-circle"></i><span>Marie (Admin)</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================================
+     LAYOUT ADMIN : SIDEBAR + MAIN
+     ============================================================ -->
+<div class="d-flex">
+
+  <!-- ── SIDEBAR ──────────────────────────────────────────────── -->
+  <aside class="admin-sidebar d-none d-md-block" style="width:220px;flex-shrink:0;">
+    <div class="admin-brand">
+      <i class="bi bi-speedometer2 me-2"></i>Dashboard Admin
+    </div>
+
+    <nav>
+      <a href="#section-stats" class="admin-nav-link active">
+        <i class="bi bi-bar-chart-line"></i>Vue d'ensemble
+      </a>
+      <a href="#section-users" class="admin-nav-link">
+        <i class="bi bi-people"></i>Utilisateurs
+      </a>
+      <a href="#section-annonces" class="admin-nav-link">
+        <i class="bi bi-megaphone"></i>Annonces
+      </a>
+      <div style="border-top:1px solid rgba(255,255,255,.08);margin:1rem 1.3rem;"></div>
+      <a href="index.html" class="admin-nav-link">
+        <i class="bi bi-house"></i>Site public
+      </a>
+    </nav>
+  </aside>
+
+  <!-- ── ZONE PRINCIPALE ──────────────────────────────────────── -->
+  <main class="admin-main flex-grow-1">
+
+    <!-- ── STATS CARDS ─────────────────────────────────────────── -->
+    <section id="section-stats" class="mb-5">
+      <h2 class="section-title mb-3">Vue d'ensemble</h2>
+      <div class="row g-3">
+
+        <!-- Nombre d'utilisateurs -->
+        <div class="col-6 col-lg-3">
+          <div class="stat-card">
+            <div class="stat-icon sky"><i class="bi bi-people-fill"></i></div>
+            <div>
+              <!-- PHP: echo $stats['nb_users'] -->
+              <div class="stat-value">48</div>
+              <div class="stat-label">Utilisateurs</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nombre d'annonces -->
+        <div class="col-6 col-lg-3">
+          <div class="stat-card">
+            <div class="stat-icon orange"><i class="bi bi-megaphone-fill"></i></div>
+            <div>
+              <!-- PHP: echo $stats['nb_annonces'] -->
+              <div class="stat-value">128</div>
+              <div class="stat-label">Annonces</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nombre de messages -->
+        <div class="col-6 col-lg-3">
+          <div class="stat-card">
+            <div class="stat-icon green"><i class="bi bi-chat-fill"></i></div>
+            <div>
+              <!-- PHP: echo $stats['nb_messages'] -->
+              <div class="stat-value">312</div>
+              <div class="stat-label">Messages</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comptes désactivés -->
+        <div class="col-6 col-lg-3">
+          <div class="stat-card">
+            <div class="stat-icon red"><i class="bi bi-person-x-fill"></i></div>
+            <div>
+              <!-- PHP: echo $stats['nb_desactives'] -->
+              <div class="stat-value">3</div>
+              <div class="stat-label">Désactivés</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── TABLEAU UTILISATEURS ───────────────────────────────── -->
+    <section id="section-users">
+      <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+        <h2 class="section-title mb-0">Gestion des utilisateurs</h2>
+        <!-- Barre de recherche rapide dans le tableau -->
+        <div style="max-width:260px;width:100%;">
+          <input type="search" class="form-control form-control-sm rounded-pill"
+            placeholder="Rechercher un utilisateur…"
+            id="searchUser"
+            onkeyup="filterTable()"
+          />
+        </div>
+      </div>
+
+      <!-- Message succès action admin -->
+      <!--
+        PHP: if (isset($message_admin)):
+        <div class="alert alert-success alert-dismissible fade show py-2 mb-3">
+          <?= htmlspecialchars($message_admin) ?>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        endif;
+      -->
+
+      <!-- Tableau responsive -->
+      <div class="bg-white rounded-3 shadow-sm overflow-hidden">
+        <div class="table-responsive">
+          <table class="table table-admin mb-0" id="usersTable">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Utilisateur</th>
+                <th scope="col">E-mail</th>
+                <th scope="col">Inscription</th>
+                <th scope="col">Annonces</th>
+                <th scope="col">Statut</th>
+                <th scope="col" class="text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!--
+                PHP: foreach ($utilisateurs as $u):
+                Variables : $u['id'], $u['pseudo'], $u['nom'], $u['email'],
+                            $u['created_at'], $u['nb_annonces'], $u['role'], $u['actif']
+              -->
+
+              <!-- Ligne 1 : Utilisateur normal actif -->
+              <tr>
+                <td class="text-muted" style="font-size:.8rem;">1</td>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="conv-avatar" style="width:32px;height:32px;font-size:.8rem;background:var(--color-sky-light);color:var(--color-sky);">
+                      <!-- PHP: strtoupper(substr($u['pseudo'], 0, 1)) -->
+                      J
+                    </div>
+                    <div>
+                      <!-- PHP: echo htmlspecialchars($u['pseudo']) -->
+                      <div class="fw-bold" style="font-size:.88rem;">Jean-Marc D.</div>
+                    </div>
+                  </div>
+                </td>
+                <td style="font-size:.85rem;">jean.marc@exemple.fr</td>
+                <td style="font-size:.82rem;color:var(--color-neutral-700);">
+                  <!-- PHP: date('d/m/Y', strtotime($u['created_at'])) -->
+                  12/01/2022
+                </td>
+                <td class="text-center" style="font-size:.85rem;">
+                  <!-- PHP: echo $u['nb_annonces'] -->
+                  12
+                </td>
+                <td>
+                  <!-- PHP: badge selon $u['role'] et $u['actif'] -->
+                  <span class="badge-user-status actif">Actif</span>
+                </td>
+                <td>
+                  <div class="d-flex justify-content-center gap-1 flex-wrap">
+                    <!--
+                      PHP: Promouvoir en admin
+                      <form action="admin-action.php" method="POST" style="display:inline">
+                        <input type="hidden" name="action" value="promouvoir">
+                        <input type="hidden" name="user_id" value="<?= $u['id'] ?>">
+                        <input type="hidden" name="csrf_token" value="...">
+                    -->
+                    <button class="btn btn-outline-warning btn-sm rounded-pill" title="Promouvoir admin"
+                      data-bs-toggle="tooltip" data-bs-placement="top" title="Promouvoir en admin">
+                      <i class="bi bi-shield-plus"></i>
+                    </button>
+                    <!--
+                      PHP: Désactiver / Réactiver
+                      action="desactiver" ou "reactiver" selon $u['actif']
+                    -->
+                    <button class="btn btn-outline-secondary btn-sm rounded-pill" title="Désactiver le compte">
+                      <i class="bi bi-person-dash"></i>
+                    </button>
+                    <!--
+                      PHP: Supprimer
+                      Confirmation avec JS ou modal Bootstrap
+                    -->
+                    <button class="btn btn-outline-danger btn-sm rounded-pill" title="Supprimer"
+                      onclick="return confirm('Supprimer définitivement cet utilisateur et toutes ses données ?')">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Ligne 2 : Admin -->
+              <tr>
+                <td class="text-muted" style="font-size:.8rem;">2</td>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="conv-avatar" style="width:32px;height:32px;font-size:.8rem;background:var(--color-orange-light);color:var(--color-orange);">
+                      M
+                    </div>
+                    <div>
+                      <div class="fw-bold" style="font-size:.88rem;">Marie Dupont</div>
+                    </div>
+                  </div>
+                </td>
+                <td style="font-size:.85rem;">marie.dupont@exemple.fr</td>
+                <td style="font-size:.82rem;color:var(--color-neutral-700);">03/03/2023</td>
+                <td class="text-center" style="font-size:.85rem;">5</td>
+                <td>
+                  <span class="badge-user-status admin">Admin</span>
+                </td>
+                <td>
+                  <div class="d-flex justify-content-center gap-1">
+                    <!-- Pas de bouton supprimer sur soi-même — PHP protège cela -->
+                    <span class="text-muted" style="font-size:.78rem;">(vous)</span>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Ligne 3 : Compte désactivé -->
+              <tr class="table-light">
+                <td class="text-muted" style="font-size:.8rem;">3</td>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="conv-avatar" style="width:32px;height:32px;font-size:.8rem;">S</div>
+                    <div>
+                      <div class="fw-bold" style="font-size:.88rem;text-decoration:line-through;color:var(--color-neutral-500);">Sophie Martin</div>
+                    </div>
+                  </div>
+                </td>
+                <td style="font-size:.85rem;color:var(--color-neutral-500);">sophie.m@exemple.fr</td>
+                <td style="font-size:.82rem;color:var(--color-neutral-700);">15/07/2023</td>
+                <td class="text-center" style="font-size:.85rem;color:var(--color-neutral-500);">2</td>
+                <td>
+                  <span class="badge-user-status desactive">Désactivé</span>
+                </td>
+                <td>
+                  <div class="d-flex justify-content-center gap-1">
+                    <button class="btn btn-outline-success btn-sm rounded-pill" title="Réactiver">
+                      <i class="bi bi-person-check"></i>
+                    </button>
+                    <button class="btn btn-outline-danger btn-sm rounded-pill" title="Supprimer"
+                      onclick="return confirm('Supprimer définitivement ?')">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Ligne 4 -->
+              <tr>
+                <td class="text-muted" style="font-size:.8rem;">4</td>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="conv-avatar" style="width:32px;height:32px;font-size:.8rem;background:var(--color-sky-light);color:var(--color-sky);">T</div>
+                    <div><div class="fw-bold" style="font-size:.88rem;">Thomas Bernard</div></div>
+                  </div>
+                </td>
+                <td style="font-size:.85rem;">thomas.b@exemple.fr</td>
+                <td style="font-size:.82rem;color:var(--color-neutral-700);">22/11/2023</td>
+                <td class="text-center" style="font-size:.85rem;">7</td>
+                <td><span class="badge-user-status actif">Actif</span></td>
+                <td>
+                  <div class="d-flex justify-content-center gap-1">
+                    <button class="btn btn-outline-warning btn-sm rounded-pill" title="Promouvoir admin"><i class="bi bi-shield-plus"></i></button>
+                    <button class="btn btn-outline-secondary btn-sm rounded-pill" title="Désactiver"><i class="bi bi-person-dash"></i></button>
+                    <button class="btn btn-outline-danger btn-sm rounded-pill" title="Supprimer" onclick="return confirm('Supprimer ?')"><i class="bi bi-trash"></i></button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Ligne 5 -->
+              <tr>
+                <td class="text-muted" style="font-size:.8rem;">5</td>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="conv-avatar" style="width:32px;height:32px;font-size:.8rem;background:#D4EDDA;color:#155724;">A</div>
+                    <div><div class="fw-bold" style="font-size:.88rem;">Alice Roux</div></div>
+                  </div>
+                </td>
+                <td style="font-size:.85rem;">alice.r@exemple.fr</td>
+                <td style="font-size:.82rem;color:var(--color-neutral-700);">05/01/2024</td>
+                <td class="text-center" style="font-size:.85rem;">3</td>
+                <td><span class="badge-user-status actif">Actif</span></td>
+                <td>
+                  <div class="d-flex justify-content-center gap-1">
+                    <button class="btn btn-outline-warning btn-sm rounded-pill" title="Promouvoir admin"><i class="bi bi-shield-plus"></i></button>
+                    <button class="btn btn-outline-secondary btn-sm rounded-pill" title="Désactiver"><i class="bi bi-person-dash"></i></button>
+                    <button class="btn btn-outline-danger btn-sm rounded-pill" title="Supprimer" onclick="return confirm('Supprimer ?')"><i class="bi bi-trash"></i></button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- PHP: endforeach; -->
+
+            </tbody>
+          </table>
+        </div><!-- /table-responsive -->
+
+        <!-- Pied de tableau : légende + pagination -->
+        <div class="d-flex justify-content-between align-items-center px-3 py-2 border-top"
+          style="font-size:.8rem;color:var(--color-neutral-500);">
+          <span>
+            <!-- PHP: echo "Affichage de 1 à " . min($per_page, $nb_users) . " sur " . $nb_users . " utilisateurs" -->
+            Affichage de 1 à 5 sur 48 utilisateurs
+          </span>
+          <!-- Pagination admin -->
+          <nav>
+            <ul class="pagination pagination-sm mb-0">
+              <li class="page-item active"><a class="page-link" href="?page=1">1</a></li>
+              <li class="page-item"><a class="page-link" href="?page=2">2</a></li>
+              <li class="page-item"><a class="page-link" href="?page=3">3</a></li>
+              <li class="page-item"><a class="page-link" href="?page=2"><i class="bi bi-chevron-right"></i></a></li>
+            </ul>
+          </nav>
+        </div>
+
+      </div><!-- /bg-white tableau -->
+
+      <!-- Légende des actions -->
+      <div class="d-flex gap-3 mt-2 flex-wrap" style="font-size:.75rem;color:var(--color-neutral-500);">
+        <span><i class="bi bi-shield-plus text-warning me-1"></i>Promouvoir en admin</span>
+        <span><i class="bi bi-person-dash text-secondary me-1"></i>Désactiver / Réactiver</span>
+        <span><i class="bi bi-trash text-danger me-1"></i>Supprimer définitivement</span>
+      </div>
+
+    </section><!-- /section-users -->
+
+  </main><!-- /admin-main -->
+</div><!-- /d-flex layout -->
+
+<!-- ── MODAL CONFIRMATION PROMOTION ADMIN ─────────────────── -->
+<!--
+  Utilisation :
+  <button data-bs-toggle="modal" data-bs-target="#modalPromouvoir"
+          data-user="Jean-Marc D." data-id="1">Promouvoir</button>
+-->
+<div class="modal fade" id="modalPromouvoir" tabindex="-1" aria-labelledby="modalPromoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 border-0 shadow">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold" id="modalPromoLabel">
+          <i class="bi bi-shield-plus text-warning me-2"></i>Promouvoir en admin
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted mb-0">
+          Êtes-vous sûr de vouloir accorder les droits <strong>administrateur</strong> à cet utilisateur ?
+          Il pourra accéder au tableau de bord et gérer les utilisateurs.
+        </p>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-outline-secondary rounded-pill btn-sm" data-bs-dismiss="modal">Annuler</button>
+        <!--
+          PHP: <form action="admin-action.php" method="POST">
+               <input type="hidden" name="action" value="promouvoir">
+               <input type="hidden" name="user_id" value="...">
+               <input type="hidden" name="csrf_token" value="...">
+        -->
+        <button type="submit" class="btn btn-warning rounded-pill btn-sm fw-bold">
+          <i class="bi bi-shield-plus me-1"></i>Confirmer la promotion
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // ── Recherche dans le tableau ─────────────────────────────────
+  function filterTable() {
+    const query = document.getElementById('searchUser').value.toLowerCase();
+    const rows  = document.querySelectorAll('#usersTable tbody tr');
+    rows.forEach(row => {
+      const text = row.textContent.toLowerCase();
+      row.style.display = text.includes(query) ? '' : 'none';
+    });
+  }
+
+  // ── Initialiser les tooltips Bootstrap ────────────────────────
+  document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+    new bootstrap.Tooltip(el);
+  });
+
+  // ── Activer le lien sidebar correspondant ─────────────────────
+  document.querySelectorAll('.admin-nav-link').forEach(link => {
+    link.addEventListener('click', function () {
+      document.querySelectorAll('.admin-nav-link').forEach(l => l.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,863 @@
+/* ============================================================
+   DANSLEBUENO — style.css
+   Variables, overrides Bootstrap 5.3, composants personnalisés
+   ============================================================ */
+
+/* ----------------------------------------------------------
+   1. VARIABLES GLOBALES (couleurs, polices, rayons, ombres)
+   ---------------------------------------------------------- */
+:root {
+  --color-orange:        #FF6B35;   /* CTA principaux, prix */
+  --color-orange-dark:   #E85A24;   /* hover boutons orange */
+  --color-orange-light:  #FFF0EA;   /* fonds subtils orange */
+
+  --color-sky:           #3B9EFF;   /* barre de recherche, accents */
+  --color-sky-dark:      #2785E0;   /* hover éléments sky */
+  --color-sky-light:     #EBF4FF;   /* fonds subtils sky */
+
+  --color-neutral-50:    #F8F9FA;
+  --color-neutral-100:   #F1F3F5;
+  --color-neutral-200:   #E9ECEF;
+  --color-neutral-500:   #ADB5BD;
+  --color-neutral-700:   #495057;
+  --color-neutral-900:   #212529;
+
+  --color-white:         #FFFFFF;
+  --color-danger:        #DC3545;
+  --color-success:       #28A745;
+
+  --font-display:        'Nunito', 'Segoe UI', sans-serif;
+  --font-body:           'Inter', 'Segoe UI', sans-serif;
+
+  --radius-sm:           6px;
+  --radius-md:           12px;
+  --radius-lg:           20px;
+  --radius-pill:         999px;
+
+  --shadow-card:         0 2px 12px rgba(0,0,0,.08);
+  --shadow-card-hover:   0 8px 28px rgba(0,0,0,.14);
+  --shadow-navbar:       0 2px 16px rgba(0,0,0,.10);
+
+  --transition-fast:     0.18s ease;
+  --transition-base:     0.28s ease;
+}
+
+/* ----------------------------------------------------------
+   2. BASE & TYPOGRAPHIE
+   ---------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-900);
+  /* Compense la navbar fixed-top (hauteur ~72px) */
+  padding-top: 72px;
+}
+
+h1, h2, h3, h4, h5, h6,
+.navbar-brand {
+  font-family: var(--font-display);
+  font-weight: 800;
+}
+
+a { text-decoration: none; color: inherit; }
+a:hover { color: var(--color-orange); }
+
+/* ----------------------------------------------------------
+   3. NAVBAR
+   ---------------------------------------------------------- */
+.navbar-danslebueno {
+  background: var(--color-white);
+  box-shadow: var(--shadow-navbar);
+  padding: 0.6rem 0;
+  min-height: 72px;
+}
+
+/* Logo */
+.navbar-brand .logo-text {
+  font-size: 1.55rem;
+  font-family: var(--font-display);
+  font-weight: 900;
+  letter-spacing: -0.5px;
+}
+.navbar-brand .logo-dans  { color: var(--color-neutral-900); }
+.navbar-brand .logo-le    { color: var(--color-sky); }
+.navbar-brand .logo-bueno { color: var(--color-orange); }
+
+/* Barre de recherche centrale */
+.search-bar-wrapper {
+  flex: 1;
+  max-width: 520px;
+}
+.search-bar-wrapper .input-group {
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  border: 2px solid var(--color-sky);
+  background: var(--color-sky-light);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+.search-bar-wrapper .input-group:focus-within {
+  border-color: var(--color-sky-dark);
+  box-shadow: 0 0 0 3px rgba(59,158,255,.18);
+}
+.search-bar-wrapper input.form-control {
+  background: transparent;
+  border: none;
+  padding: 0.55rem 1rem;
+  font-size: 0.95rem;
+  color: var(--color-neutral-900);
+}
+.search-bar-wrapper input.form-control::placeholder { color: var(--color-neutral-500); }
+.search-bar-wrapper input.form-control:focus { box-shadow: none; }
+.search-bar-wrapper .btn-search {
+  background: var(--color-sky);
+  border: none;
+  color: #fff;
+  padding: 0 1.1rem;
+  font-size: 1rem;
+  transition: background var(--transition-fast);
+}
+.search-bar-wrapper .btn-search:hover { background: var(--color-sky-dark); }
+
+/* Bouton Déposer */
+.btn-deposer {
+  background: var(--color-orange);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 0.5rem 1.4rem;
+  font-size: 0.92rem;
+  transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+  white-space: nowrap;
+}
+.btn-deposer:hover {
+  background: var(--color-orange-dark);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(255,107,53,.35);
+}
+
+/* Icônes compte / favoris navbar */
+.nav-icon-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.7rem;
+  color: var(--color-neutral-700);
+  gap: 2px;
+  padding: 0 0.3rem;
+  transition: color var(--transition-fast);
+}
+.nav-icon-link i { font-size: 1.3rem; }
+.nav-icon-link:hover { color: var(--color-orange); }
+
+/* ----------------------------------------------------------
+   4. BOUTONS GÉNÉRAUX
+   ---------------------------------------------------------- */
+.btn-primary-orange {
+  background: var(--color-orange);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+.btn-primary-orange:hover {
+  background: var(--color-orange-dark);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(255,107,53,.32);
+}
+
+.btn-outline-sky {
+  border: 2px solid var(--color-sky);
+  color: var(--color-sky);
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  background: transparent;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+.btn-outline-sky:hover {
+  background: var(--color-sky);
+  color: #fff;
+}
+
+/* ----------------------------------------------------------
+   5. CARDS ANNONCES (page d'accueil & mes annonces)
+   ---------------------------------------------------------- */
+.annonce-card {
+  background: var(--color-white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  border: none;
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+  cursor: pointer;
+}
+.annonce-card:hover {
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-4px);
+}
+
+/* Image de l'annonce */
+.annonce-card .card-img-top {
+  height: 190px;
+  object-fit: cover;
+  width: 100%;
+}
+/* Placeholder image quand pas de photo */
+.annonce-card .img-placeholder {
+  height: 190px;
+  background: var(--color-neutral-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-neutral-500);
+  font-size: 2.5rem;
+}
+
+.annonce-card .card-body { padding: 0.9rem 1rem 1rem; }
+.annonce-card .card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  /* Tronque le titre sur 2 lignes */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.35;
+}
+
+/* Badge état (neuf, bon état, correct) */
+.badge-etat {
+  font-size: 0.68rem;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  padding: 0.2rem 0.65rem;
+  background: var(--color-neutral-200);
+  color: var(--color-neutral-700);
+}
+.badge-etat.neuf     { background: #D4EDDA; color: #155724; }
+.badge-etat.bon      { background: #D1ECF1; color: #0C5460; }
+.badge-etat.correct  { background: #FFF3CD; color: #856404; }
+
+/* Prix */
+.annonce-price {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.15rem;
+  color: var(--color-orange);
+}
+
+/* Bouton favori (cœur) */
+.btn-favori {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--color-neutral-500);
+  font-size: 1.2rem;
+  transition: color var(--transition-fast), transform var(--transition-fast);
+  line-height: 1;
+}
+.btn-favori:hover,
+.btn-favori.active { color: var(--color-danger); }
+.btn-favori:hover  { transform: scale(1.2); }
+
+/* ----------------------------------------------------------
+   6. SECTION TITRE DE PAGE (bandeau gris clair)
+   ---------------------------------------------------------- */
+.page-hero {
+  background: var(--color-white);
+  border-bottom: 1px solid var(--color-neutral-200);
+  padding: 1.4rem 0 1.1rem;
+  margin-bottom: 2rem;
+}
+.page-hero h1 {
+  font-size: 1.6rem;
+  margin: 0;
+  color: var(--color-neutral-900);
+}
+
+/* ----------------------------------------------------------
+   7. PAGE DÉTAIL ANNONCE
+   ---------------------------------------------------------- */
+/* Grande image principale */
+.detail-main-img {
+  width: 100%;
+  max-height: 460px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+}
+
+/* Thumbnails galerie */
+.gallery-thumb {
+  width: 72px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color var(--transition-fast);
+}
+.gallery-thumb:hover,
+.gallery-thumb.active { border-color: var(--color-sky); }
+
+/* Panneau vendeur sticky */
+.seller-panel {
+  background: var(--color-white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: 1.5rem;
+  position: sticky;
+  top: 88px; /* = hauteur navbar + 16px */
+}
+.seller-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--color-neutral-200);
+}
+.seller-name {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-neutral-900);
+}
+.seller-since {
+  font-size: 0.78rem;
+  color: var(--color-neutral-500);
+}
+
+/* ----------------------------------------------------------
+   8. FORMULAIRES (connexion, inscription, déposer annonce)
+   ---------------------------------------------------------- */
+.form-card {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 2.2rem 2.5rem;
+}
+@media (max-width: 576px) {
+  .form-card { padding: 1.4rem 1.2rem; }
+}
+
+.form-label {
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--color-neutral-700);
+  margin-bottom: 0.3rem;
+}
+.form-control,
+.form-select {
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--color-neutral-200);
+  padding: 0.6rem 0.9rem;
+  font-size: 0.95rem;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--color-sky);
+  box-shadow: 0 0 0 3px rgba(59,158,255,.15);
+  outline: none;
+}
+
+/* Zone d'upload image */
+.upload-zone {
+  border: 2px dashed var(--color-neutral-200);
+  border-radius: var(--radius-md);
+  background: var(--color-neutral-50);
+  padding: 2.5rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+.upload-zone:hover {
+  border-color: var(--color-sky);
+  background: var(--color-sky-light);
+}
+.upload-zone i {
+  font-size: 2.4rem;
+  color: var(--color-sky);
+  margin-bottom: 0.5rem;
+}
+.upload-zone p {
+  font-size: 0.88rem;
+  color: var(--color-neutral-500);
+  margin: 0;
+}
+
+/* Divider "ou" dans formulaires auth */
+.divider-or {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: var(--color-neutral-500);
+  font-size: 0.85rem;
+  margin: 1.2rem 0;
+}
+.divider-or::before,
+.divider-or::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-neutral-200);
+}
+
+/* ----------------------------------------------------------
+   9. MESSAGERIE (split-pane)
+   ---------------------------------------------------------- */
+.messaging-layout {
+  /* Hauteur disponible = viewport – navbar */
+  height: calc(100vh - 72px);
+  display: flex;
+  overflow: hidden;
+}
+
+/* Panneau liste conversations */
+.conv-list-panel {
+  width: 320px;
+  min-width: 260px;
+  background: var(--color-white);
+  border-right: 1px solid var(--color-neutral-200);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.conv-list-header {
+  padding: 1rem 1.2rem;
+  border-bottom: 1px solid var(--color-neutral-200);
+  font-weight: 800;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  background: var(--color-white);
+}
+.conv-list-scroll { overflow-y: auto; flex: 1; }
+
+/* Item conversation */
+.conv-item {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  padding: 0.9rem 1.2rem;
+  border-bottom: 1px solid var(--color-neutral-100);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+.conv-item:hover { background: var(--color-neutral-50); }
+.conv-item.active { background: var(--color-sky-light); }
+
+.conv-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--color-neutral-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--color-neutral-700);
+  overflow: hidden;
+}
+.conv-meta { flex: 1; min-width: 0; }
+.conv-name {
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 0.1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.conv-last-msg {
+  font-size: 0.78rem;
+  color: var(--color-neutral-500);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.conv-annonce-thumb {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--color-neutral-200);
+}
+.badge-unread {
+  background: var(--color-orange);
+  color: #fff;
+  border-radius: var(--radius-pill);
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.1rem 0.5rem;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Panneau messages */
+.chat-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--color-neutral-100);
+}
+.chat-header {
+  background: var(--color-white);
+  border-bottom: 1px solid var(--color-neutral-200);
+  padding: 0.9rem 1.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-shrink: 0;
+}
+.chat-annonce-info .annonce-title-small {
+  font-size: 0.78rem;
+  color: var(--color-neutral-500);
+}
+.chat-annonce-info .annonce-price-small {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: var(--color-orange);
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+/* Bulles de chat */
+.bubble-wrapper {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+/* Message reçu (gauche) */
+.bubble-wrapper.received { justify-content: flex-start; }
+/* Message envoyé (droite) */
+.bubble-wrapper.sent     { justify-content: flex-end; }
+
+.bubble {
+  max-width: 68%;
+  padding: 0.65rem 1rem;
+  border-radius: var(--radius-lg);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  word-break: break-word;
+}
+.bubble-wrapper.received .bubble {
+  background: var(--color-white);
+  color: var(--color-neutral-900);
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.07);
+}
+.bubble-wrapper.sent .bubble {
+  background: var(--color-sky);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.bubble-time {
+  font-size: 0.7rem;
+  color: var(--color-neutral-500);
+  white-space: nowrap;
+  margin-bottom: 0.2rem;
+}
+.bubble-wrapper.sent .bubble-time { text-align: right; }
+
+/* Petite image avatar dans le chat */
+.bubble-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--color-neutral-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--color-neutral-700);
+  overflow: hidden;
+}
+
+/* Zone de saisie */
+.chat-input-bar {
+  background: var(--color-white);
+  border-top: 1px solid var(--color-neutral-200);
+  padding: 0.85rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-shrink: 0;
+}
+.chat-input-bar textarea.form-control {
+  border-radius: var(--radius-pill);
+  resize: none;
+  min-height: 42px;
+  max-height: 120px;
+  padding: 0.55rem 1rem;
+  font-size: 0.92rem;
+  border: 1.5px solid var(--color-neutral-200);
+}
+.btn-send {
+  background: var(--color-sky);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+.btn-send:hover {
+  background: var(--color-sky-dark);
+  transform: scale(1.08);
+}
+
+/* ----------------------------------------------------------
+   10. PAGE PROFIL (nav-tabs)
+   ---------------------------------------------------------- */
+.profile-header-card {
+  background: var(--color-white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: 1.8rem 2rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.profile-avatar-lg {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--color-sky-light);
+  flex-shrink: 0;
+  background: var(--color-neutral-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--color-neutral-700);
+  overflow: hidden;
+  font-family: var(--font-display);
+}
+.profile-name-block .user-name {
+  font-size: 1.4rem;
+  font-weight: 900;
+  margin-bottom: 0.1rem;
+}
+.profile-name-block .user-email {
+  font-size: 0.85rem;
+  color: var(--color-neutral-500);
+}
+
+/* Tabs Bootstrap custom */
+.nav-tabs-custom {
+  border-bottom: 2px solid var(--color-neutral-200);
+  margin-bottom: 1.5rem;
+  gap: 0.3rem;
+}
+.nav-tabs-custom .nav-link {
+  color: var(--color-neutral-700);
+  font-weight: 700;
+  font-size: 0.9rem;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  border-radius: 0;
+  padding: 0.65rem 1rem;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+.nav-tabs-custom .nav-link:hover { color: var(--color-orange); }
+.nav-tabs-custom .nav-link.active {
+  color: var(--color-orange);
+  border-bottom-color: var(--color-orange);
+  background: none;
+}
+
+/* ----------------------------------------------------------
+   11. PAGE ADMINISTRATION
+   ---------------------------------------------------------- */
+.admin-sidebar {
+  background: var(--color-neutral-900);
+  min-height: calc(100vh - 72px);
+  color: var(--color-neutral-200);
+  padding: 1.5rem 0;
+}
+.admin-sidebar .admin-brand {
+  padding: 0 1.3rem 1.2rem;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--color-orange);
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  margin-bottom: 1rem;
+}
+.admin-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.65rem 1.3rem;
+  color: var(--color-neutral-500);
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+.admin-nav-link:hover,
+.admin-nav-link.active {
+  background: rgba(255,255,255,.07);
+  color: var(--color-white);
+}
+.admin-nav-link i { font-size: 1rem; width: 18px; text-align: center; }
+
+.admin-main {
+  padding: 2rem 2.5rem;
+  flex: 1;
+}
+@media (max-width: 768px) {
+  .admin-main { padding: 1.2rem; }
+  .admin-sidebar { display: none; }
+}
+
+/* Stat cards (dashboard) */
+.stat-card {
+  background: var(--color-white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: 1.3rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.stat-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+.stat-icon.orange { background: var(--color-orange-light); color: var(--color-orange); }
+.stat-icon.sky    { background: var(--color-sky-light);    color: var(--color-sky); }
+.stat-icon.green  { background: #D4EDDA; color: #155724; }
+.stat-icon.red    { background: #F8D7DA; color: #721C24; }
+
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 900;
+  line-height: 1.1;
+}
+.stat-label {
+  font-size: 0.78rem;
+  color: var(--color-neutral-500);
+  font-weight: 600;
+}
+
+/* Tableau admin */
+.table-admin thead {
+  background: var(--color-neutral-100);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--color-neutral-700);
+}
+.table-admin tbody tr {
+  vertical-align: middle;
+  font-size: 0.88rem;
+  transition: background var(--transition-fast);
+}
+.table-admin tbody tr:hover { background: var(--color-neutral-50); }
+
+/* Badges statut utilisateur */
+.badge-user-status {
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+  padding: 0.22rem 0.7rem;
+}
+.badge-user-status.actif  { background: #D4EDDA; color: #155724; }
+.badge-user-status.desactive { background: #F8D7DA; color: #721C24; }
+.badge-user-status.admin  { background: var(--color-orange-light); color: var(--color-orange-dark); }
+
+/* ----------------------------------------------------------
+   12. FOOTER
+   ---------------------------------------------------------- */
+.site-footer {
+  background: var(--color-neutral-900);
+  color: var(--color-neutral-500);
+  padding: 2.5rem 0 1.5rem;
+  margin-top: 4rem;
+  font-size: 0.85rem;
+}
+.site-footer .footer-brand {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 900;
+}
+.site-footer a { color: var(--color-neutral-500); transition: color var(--transition-fast); }
+.site-footer a:hover { color: var(--color-orange); }
+.site-footer .footer-divider {
+  border-top: 1px solid rgba(255,255,255,.08);
+  margin: 1.5rem 0 1rem;
+}
+
+/* ----------------------------------------------------------
+   13. UTILITAIRES DIVERS
+   ---------------------------------------------------------- */
+/* Séparateur section */
+.section-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-neutral-900);
+  margin-bottom: 1.2rem;
+}
+
+/* Aucun résultat / état vide */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--color-neutral-500);
+}
+.empty-state i { font-size: 3rem; margin-bottom: 0.8rem; }
+.empty-state p { font-size: 0.95rem; }
+
+/* Responsive: masque le panneau conv-list sur mobile */
+@media (max-width: 768px) {
+  .messaging-layout { flex-direction: column; height: auto; }
+  .conv-list-panel  { width: 100%; max-height: 280px; border-right: none; border-bottom: 1px solid var(--color-neutral-200); }
+  .chat-panel       { height: 70vh; }
+}
+
+/* Scrollbar discrète */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-neutral-200); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-neutral-500); }

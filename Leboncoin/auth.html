@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Connexion / Inscription – DansLeBueno</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Page auth : fond dégradé pour l'ambiance */
+    body { background: linear-gradient(135deg, var(--color-sky-light) 0%, var(--color-orange-light) 100%); }
+
+    .auth-wrapper {
+      min-height: calc(100vh - 72px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 460px;
+    }
+
+    /* Tabs auth */
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: var(--color-neutral-100);
+      border-radius: var(--radius-pill);
+      padding: 4px;
+      margin-bottom: 1.8rem;
+    }
+    .auth-tab-btn {
+      border: none;
+      background: none;
+      border-radius: var(--radius-pill);
+      padding: 0.5rem;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background var(--transition-fast), color var(--transition-fast);
+      color: var(--color-neutral-700);
+    }
+    .auth-tab-btn.active {
+      background: var(--color-white);
+      color: var(--color-orange);
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR (version simplifiée sans compte) -->
+<nav class="navbar navbar-danslebueno fixed-top">
+  <div class="container-xl">
+    <a href="index.html" class="navbar-brand">
+      <span class="logo-text">
+        <span class="logo-dans">dans</span><span class="logo-le">le</span><span class="logo-bueno">bueno</span>
+      </span>
+    </a>
+    <a href="index.html" class="btn btn-outline-secondary btn-sm rounded-pill ms-auto">
+      <i class="bi bi-arrow-left me-1"></i>Retour aux annonces
+    </a>
+  </div>
+</nav>
+
+<!-- ============================================================
+     BLOC CENTRÉ AUTH
+     ============================================================ -->
+<div class="auth-wrapper">
+  <div class="auth-card">
+
+    <!-- Logo + accroche -->
+    <div class="text-center mb-4">
+      <span class="logo-text" style="font-size:2rem;">
+        <span class="logo-dans">dans</span><span class="logo-le">le</span><span class="logo-bueno">bueno</span>
+      </span>
+      <p class="text-muted mt-1 mb-0" style="font-size:.9rem;">
+        Achetez, vendez, échangez près de chez vous.
+      </p>
+    </div>
+
+    <!-- Carte formulaire -->
+    <div class="form-card">
+
+      <!--
+        PHP : déterminer l'onglet actif selon $_GET['mode'] ('connexion' ou 'inscription')
+        ou selon les erreurs de formulaire ($active_tab = 'connexion' | 'inscription')
+      -->
+
+      <!-- Switch Connexion / Inscription -->
+      <div class="auth-tabs" role="tablist">
+        <!-- PHP: class="auth-tab-btn <?= $active_tab === 'connexion' ? 'active' : '' ?>" -->
+        <button class="auth-tab-btn active" id="tab-connexion"
+          data-bs-toggle="tab" data-bs-target="#panel-connexion" type="button" role="tab">
+          Connexion
+        </button>
+        <button class="auth-tab-btn" id="tab-inscription"
+          data-bs-toggle="tab" data-bs-target="#panel-inscription" type="button" role="tab">
+          Inscription
+        </button>
+      </div>
+
+      <!-- Panneaux -->
+      <div class="tab-content">
+
+        <!-- ── PANNEAU CONNEXION ────────────────────────────── -->
+        <!--
+          PHP: <form action="connexion.php" method="POST">
+          Afficher erreur si isset($erreur_connexion):
+            <div class="alert alert-danger"><?= $erreur_connexion ?></div>
+        -->
+        <div class="tab-pane fade show active" id="panel-connexion" role="tabpanel">
+
+          <!-- Message d'erreur PHP (si mauvais identifiants) -->
+          <!--
+          <div class="alert alert-danger d-flex align-items-center gap-2 py-2 mb-3" style="font-size:.88rem;">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            Email ou mot de passe incorrect.
+          </div>
+          -->
+
+          <div class="mb-3">
+            <label for="login-email" class="form-label">Adresse e-mail</label>
+            <input
+              type="email"
+              class="form-control"
+              id="login-email"
+              name="email"
+              placeholder="vous@exemple.fr"
+              required
+              autocomplete="email"
+              <!-- PHP: value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" -->
+            />
+          </div>
+
+          <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <label for="login-password" class="form-label mb-0">Mot de passe</label>
+              <a href="#" class="text-muted" style="font-size:.8rem;">Mot de passe oublié ?</a>
+            </div>
+            <div class="input-group">
+              <input
+                type="password"
+                class="form-control border-end-0"
+                id="login-password"
+                name="password"
+                placeholder="••••••••"
+                required
+                autocomplete="current-password"
+              />
+              <!-- Bouton afficher/masquer mot de passe (JS minimal) -->
+              <button
+                class="btn btn-outline-secondary border-start-0"
+                type="button"
+                id="toggleLoginPwd"
+                tabindex="-1"
+                aria-label="Afficher/masquer le mot de passe"
+              >
+                <i class="bi bi-eye" id="eyeLogin"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Token CSRF -->
+          <!-- PHP: <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>"> -->
+          <input type="hidden" name="csrf_token" value="[TOKEN_PHP]" />
+
+          <button type="submit" class="btn btn-primary-orange w-100 py-2 mt-1">
+            Se connecter
+          </button>
+
+          <div class="divider-or">ou</div>
+
+          <!-- Lien vers inscription -->
+          <p class="text-center mb-0" style="font-size:.88rem;">
+            Pas encore de compte ?
+            <a href="#" class="text-orange fw-bold"
+              style="color:var(--color-orange);"
+              onclick="document.getElementById('tab-inscription').click(); return false;">
+              Créer un compte
+            </a>
+          </p>
+
+        </div><!-- /panel-connexion -->
+
+        <!-- ── PANNEAU INSCRIPTION ──────────────────────────── -->
+        <!--
+          PHP: <form action="inscription.php" method="POST">
+        -->
+        <div class="tab-pane fade" id="panel-inscription" role="tabpanel">
+
+          <!-- Message d'erreur PHP (ex: email déjà utilisé) -->
+          <!--
+          <div class="alert alert-danger py-2 mb-3" style="font-size:.88rem;">
+            Cet email est déjà utilisé.
+          </div>
+          -->
+
+          <!-- Prénom / pseudo -->
+          <div class="mb-3">
+            <label for="reg-pseudo" class="form-label">Prénom ou pseudo</label>
+            <input
+              type="text"
+              class="form-control"
+              id="reg-pseudo"
+              name="pseudo"
+              placeholder="Ex : Marie ou M_Dupont"
+              required
+              maxlength="60"
+              <!-- PHP: value="<?= htmlspecialchars($_POST['pseudo'] ?? '') ?>" -->
+            />
+          </div>
+
+          <!-- Nom (optionnel selon cahier des charges) -->
+          <div class="mb-3">
+            <label for="reg-nom" class="form-label">Nom <span class="text-muted fw-normal">(optionnel)</span></label>
+            <input
+              type="text"
+              class="form-control"
+              id="reg-nom"
+              name="nom"
+              placeholder="Ex : Dupont"
+              maxlength="80"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="reg-email" class="form-label">Adresse e-mail</label>
+            <input
+              type="email"
+              class="form-control"
+              id="reg-email"
+              name="email"
+              placeholder="vous@exemple.fr"
+              required
+              autocomplete="email"
+            />
+            <div class="form-text">Utilisé pour vous connecter. Ne sera pas affiché publiquement.</div>
+          </div>
+
+          <div class="mb-3">
+            <label for="reg-password" class="form-label">Mot de passe</label>
+            <div class="input-group">
+              <input
+                type="password"
+                class="form-control border-end-0"
+                id="reg-password"
+                name="password"
+                placeholder="8 caractères minimum"
+                required
+                minlength="8"
+                autocomplete="new-password"
+              />
+              <button class="btn btn-outline-secondary border-start-0" type="button"
+                id="toggleRegPwd" tabindex="-1" aria-label="Voir le mot de passe">
+                <i class="bi bi-eye" id="eyeReg"></i>
+              </button>
+            </div>
+            <!-- Indicateur de force (visuel simple) -->
+            <div class="mt-1 d-flex gap-1">
+              <div style="height:3px;flex:1;border-radius:2px;background:var(--color-neutral-200);" id="strength-1"></div>
+              <div style="height:3px;flex:1;border-radius:2px;background:var(--color-neutral-200);" id="strength-2"></div>
+              <div style="height:3px;flex:1;border-radius:2px;background:var(--color-neutral-200);" id="strength-3"></div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="reg-password-confirm" class="form-label">Confirmer le mot de passe</label>
+            <input
+              type="password"
+              class="form-control"
+              id="reg-password-confirm"
+              name="password_confirm"
+              placeholder="••••••••"
+              required
+              autocomplete="new-password"
+            />
+          </div>
+
+          <!-- Conditions -->
+          <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="cgu" name="cgu" required />
+            <label class="form-check-label" for="cgu" style="font-size:.85rem;">
+              J'accepte les <a href="#" style="color:var(--color-sky);">conditions d'utilisation</a>
+            </label>
+          </div>
+
+          <!-- CSRF -->
+          <input type="hidden" name="csrf_token" value="[TOKEN_PHP]" />
+
+          <button type="submit" class="btn btn-primary-orange w-100 py-2">
+            Créer mon compte
+          </button>
+
+          <div class="divider-or">ou</div>
+
+          <p class="text-center mb-0" style="font-size:.88rem;">
+            Déjà un compte ?
+            <a href="#" style="color:var(--color-orange);" class="fw-bold"
+              onclick="document.getElementById('tab-connexion').click(); return false;">
+              Se connecter
+            </a>
+          </p>
+
+        </div><!-- /panel-inscription -->
+
+      </div><!-- /tab-content -->
+    </div><!-- /form-card -->
+
+  </div><!-- /auth-card -->
+</div><!-- /auth-wrapper -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // ── Afficher / masquer mot de passe ──────────────────────────
+  function togglePwd(btnId, eyeId, inputId) {
+    document.getElementById(btnId).addEventListener('click', function () {
+      const input = document.getElementById(inputId);
+      const eye   = document.getElementById(eyeId);
+      const isHidden = input.type === 'password';
+      input.type = isHidden ? 'text' : 'password';
+      eye.classList.toggle('bi-eye',      !isHidden);
+      eye.classList.toggle('bi-eye-slash', isHidden);
+    });
+  }
+  togglePwd('toggleLoginPwd', 'eyeLogin', 'login-password');
+  togglePwd('toggleRegPwd',   'eyeReg',   'reg-password');
+
+  // ── Indicateur de force de mot de passe (visuel seulement) ───
+  document.getElementById('reg-password').addEventListener('input', function () {
+    const len = this.value.length;
+    const bars = [
+      document.getElementById('strength-1'),
+      document.getElementById('strength-2'),
+      document.getElementById('strength-3'),
+    ];
+    bars.forEach(b => b.style.background = 'var(--color-neutral-200)');
+    if (len >= 4)  bars[0].style.background = '#DC3545'; // faible
+    if (len >= 8)  bars[1].style.background = '#FFC107'; // moyen
+    if (len >= 12) bars[2].style.background = '#28A745'; // fort
+  });
+
+  // ── Synchronisation onglets Bootstrap ↔ boutons custom ───────
+  document.querySelectorAll('.auth-tab-btn').forEach(btn => {
+    btn.addEventListener('shown.bs.tab', function () {
+      document.querySelectorAll('.auth-tab-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

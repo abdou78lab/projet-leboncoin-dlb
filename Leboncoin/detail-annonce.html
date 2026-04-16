@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Casque Sony WH-1000XM5 – DansLeBueno</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- NAVBAR (même structure que index.html — PHP include) -->
+<nav class="navbar navbar-expand-lg navbar-danslebueno fixed-top">
+  <div class="container-xl d-flex align-items-center gap-3">
+    <a href="index.html" class="navbar-brand me-lg-3 flex-shrink-0">
+      <span class="logo-text">
+        <span class="logo-dans">dans</span><span class="logo-le">le</span><span class="logo-bueno">bueno</span>
+      </span>
+    </a>
+    <div class="search-bar-wrapper d-none d-md-flex flex-grow-1">
+      <div class="input-group w-100">
+        <input type="search" class="form-control" placeholder="Rechercher une annonce…" name="q" />
+        <button class="btn-search" type="submit"><i class="bi bi-search"></i></button>
+      </div>
+    </div>
+    <div class="d-flex align-items-center gap-2 ms-auto">
+      <a href="deposer-annonce.html" class="btn btn-deposer d-none d-sm-inline-flex">
+        <i class="bi bi-plus-lg me-1"></i>Déposer
+      </a>
+      <a href="profil.html" class="nav-icon-link">
+        <i class="bi bi-person-circle"></i><span>Marie</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================================
+     FIL D'ARIANE
+     PHP: générer le titre dynamiquement avec $annonce['titre']
+     ============================================================ -->
+<div class="container-xl py-3">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb mb-0" style="font-size:.82rem;">
+      <li class="breadcrumb-item"><a href="index.html">Accueil</a></li>
+      <!-- PHP: <li class="breadcrumb-item active"><?= htmlspecialchars($annonce['titre']) ?></li> -->
+      <li class="breadcrumb-item active" aria-current="page">Casque Audio Sony WH-1000XM5</li>
+    </ol>
+  </nav>
+</div>
+
+<!-- ============================================================
+     LAYOUT ASYMÉTRIQUE : CONTENU GAUCHE + PANNEAU VENDEUR DROITE
+     ============================================================ -->
+<div class="container-xl pb-5">
+  <div class="row g-4">
+
+    <!-- ── COLONNE PRINCIPALE (2/3) ───────────────────────────── -->
+    <div class="col-12 col-lg-8">
+
+      <!-- Grande image principale -->
+      <!--
+        PHP src: "uploads/<?= htmlspecialchars($annonce['image']) ?>"
+        PHP alt: htmlspecialchars($annonce['titre'])
+      -->
+      <img
+        src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=900&h=520&fit=crop"
+        alt="Casque Audio Sony WH-1000XM5"
+        class="detail-main-img mb-3"
+        id="mainImage"
+      />
+
+      <!-- Galerie miniatures (si plusieurs images PHP) -->
+      <!--
+        PHP: foreach ($annonce['images'] as $img):
+      -->
+      <div class="d-flex gap-2 mb-4 flex-wrap">
+        <img
+          src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100&h=78&fit=crop"
+          alt="Vue 1"
+          class="gallery-thumb active"
+          onclick="document.getElementById('mainImage').src=this.src"
+        />
+        <img
+          src="https://images.unsplash.com/photo-1484704849700-f032a568e944?w=100&h=78&fit=crop"
+          alt="Vue 2"
+          class="gallery-thumb"
+          onclick="document.getElementById('mainImage').src=this.src"
+        />
+        <img
+          src="https://images.unsplash.com/photo-1524678606370-a47ad25cb82a?w=100&h=78&fit=crop"
+          alt="Vue 3"
+          class="gallery-thumb"
+          onclick="document.getElementById('mainImage').src=this.src"
+        />
+      </div>
+      <!-- PHP: endforeach; -->
+
+      <!-- Bloc titre + état + prix -->
+      <div class="bg-white rounded-3 shadow-sm p-4 mb-4">
+        <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
+          <div>
+            <!-- PHP: echo htmlspecialchars($annonce['titre']) -->
+            <h1 style="font-size:1.5rem;font-weight:900;font-family:var(--font-display);">
+              Casque Audio Sony WH-1000XM5 – Comme neuf
+            </h1>
+            <div class="d-flex align-items-center gap-2 mt-1">
+              <!-- PHP: badge selon $annonce['etat'] -->
+              <span class="badge-etat neuf">Neuf</span>
+              <!-- PHP: echo date('d/m/Y', strtotime($annonce['created_at'])) -->
+              <small class="text-muted">Publié le 12/06/2024</small>
+              <small class="text-muted">· Paris (75)</small>
+            </div>
+          </div>
+          <!-- Prix -->
+          <div class="text-end">
+            <!-- PHP: echo number_format($annonce['prix'], 0, ',', ' ') -->
+            <div class="annonce-price" style="font-size:1.8rem;">250 €</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="bg-white rounded-3 shadow-sm p-4 mb-4">
+        <h2 class="section-title">Description</h2>
+        <!--
+          PHP: echo nl2br(htmlspecialchars($annonce['description']))
+          IMPORTANT: nl2br pour conserver les sauts de lignes saisis par l'utilisateur.
+        -->
+        <div class="text-muted" style="line-height:1.75;font-size:.95rem;">
+          <p>
+            Je vends mon casque Sony WH-1000XM5 acheté il y a 6 mois. Il est en parfait état, 
+            jamais utilisé en dehors de la maison. La réduction de bruit est excellente, son 
+            cristallin. Livré avec sa pochette de transport d'origine, le câble et le chargeur.
+          </p>
+          <p>
+            Référence : Sony WH-1000XM5 – Couleur : Noir – Garantie constructeur encore valide 
+            jusqu'en décembre 2025.
+          </p>
+          <p>
+            Pas d'échange. Vente définitive. Remise en main propre uniquement.
+          </p>
+        </div>
+      </div>
+
+      <!-- Boutons propriétaire (VISIBLES SEULEMENT SI $user_id === $annonce['user_id']) -->
+      <!--
+        PHP: if (isset($_SESSION['user_id']) && $_SESSION['user_id'] === $annonce['user_id']):
+      -->
+      <div class="bg-white rounded-3 shadow-sm p-3 mb-4 d-flex gap-2 align-items-center">
+        <i class="bi bi-gear text-muted"></i>
+        <span class="text-muted" style="font-size:.85rem;">Vous êtes le propriétaire de cette annonce.</span>
+        <a href="modifier-annonce.html" class="btn btn-outline-secondary btn-sm rounded-pill ms-auto">
+          <i class="bi bi-pencil me-1"></i>Modifier
+        </a>
+        <!-- PHP: action="supprimer-annonce.php?id=<?= $annonce['id'] ?>" method="POST" -->
+        <button class="btn btn-outline-danger btn-sm rounded-pill"
+          data-bs-toggle="modal" data-bs-target="#modalSupprimerAnnonce">
+          <i class="bi bi-trash me-1"></i>Supprimer
+        </button>
+      </div>
+      <!-- PHP: endif; -->
+
+    </div><!-- /col principale -->
+
+    <!-- ── PANNEAU VENDEUR (sticky) ────────────────────────────── -->
+    <!--
+      Variables PHP :
+        $vendeur['pseudo']       → nom/prénom du vendeur
+        $vendeur['created_at']   → date d'inscription
+        $vendeur['nb_annonces']  → nombre d'annonces du vendeur
+        $annonce['id']           → pour construire le lien de contact
+    -->
+    <div class="col-12 col-lg-4">
+      <div class="seller-panel">
+
+        <!-- Avatar + identité vendeur -->
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <!-- Si pas d'avatar : initiales dans un div -->
+          <div class="seller-avatar d-flex align-items-center justify-content-center bg-secondary text-white fw-bold"
+            style="font-size:1.3rem;font-family:var(--font-display);">
+            <!-- PHP: strtoupper(substr($vendeur['pseudo'], 0, 1)) -->
+            J
+          </div>
+          <div>
+            <!-- PHP: echo htmlspecialchars($vendeur['pseudo']) -->
+            <div class="seller-name">Jean-Marc D.</div>
+            <!-- PHP: "Membre depuis " . date('F Y', strtotime($vendeur['created_at'])) -->
+            <div class="seller-since">Membre depuis janvier 2022</div>
+          </div>
+        </div>
+
+        <!-- Stat annonces -->
+        <div class="d-flex gap-3 mb-4 pb-3" style="border-bottom:1px solid var(--color-neutral-100);">
+          <div class="text-center">
+            <!-- PHP: echo $vendeur['nb_annonces'] -->
+            <div class="fw-bold" style="font-size:1.1rem;">12</div>
+            <div class="text-muted" style="font-size:.75rem;">Annonces</div>
+          </div>
+        </div>
+
+        <!-- Bouton contacter (lance une discussion) -->
+        <!--
+          PHP: Si connecté → lien vers messagerie.php?annonce_id=X&destinataire_id=Y
+               Sinon → lien vers auth.php?redirect=…
+          Bouton masqué si l'annonce appartient à l'utilisateur connecté.
+        -->
+        <a href="messagerie.html" class="btn btn-primary-orange w-100 mb-2 py-2">
+          <i class="bi bi-chat-dots me-2"></i>Contacter le vendeur
+        </a>
+
+        <!-- Bouton favori (duplication depuis la card) -->
+        <!--
+          PHP: class="btn <?= $is_favori ? 'btn-danger' : 'btn-outline-secondary' ?>"
+               data-id="<?= $annonce['id'] ?>"
+        -->
+        <button class="btn btn-outline-secondary w-100 rounded-pill btn-sm">
+          <i class="bi bi-heart me-1"></i>Ajouter aux favoris
+        </button>
+
+        <!-- Avertissement sécurité -->
+        <div class="mt-3 p-2 rounded-2" style="background:var(--color-orange-light);font-size:.75rem;color:var(--color-orange-dark);">
+          <i class="bi bi-shield-check me-1"></i>
+          Ne payez jamais avant d'avoir vu l'objet. Privilégiez les remises en main propre.
+        </div>
+
+      </div><!-- /seller-panel -->
+    </div><!-- /col vendeur -->
+
+  </div><!-- /row -->
+</div><!-- /container -->
+
+<!-- ── MODAL CONFIRMATION SUPPRESSION ───────────────────────── -->
+<div class="modal fade" id="modalSupprimerAnnonce" tabindex="-1" aria-labelledby="modalSuppLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 border-0 shadow">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold" id="modalSuppLabel">Supprimer l'annonce</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted mb-0">
+          Êtes-vous sûr de vouloir supprimer cette annonce ? Cette action est <strong>irréversible</strong>.
+        </p>
+      </div>
+      <div class="modal-footer border-0 pt-0">
+        <button type="button" class="btn btn-outline-secondary rounded-pill btn-sm" data-bs-dismiss="modal">Annuler</button>
+        <!-- PHP: <form action="supprimer-annonce.php" method="POST"> + input hidden id -->
+        <button type="submit" class="btn btn-danger rounded-pill btn-sm">
+          <i class="bi bi-trash me-1"></i>Supprimer définitivement
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER (même que index.html) -->
+<footer class="site-footer">
+  <div class="container-xl">
+    <div class="footer-divider mt-0"></div>
+    <p class="text-center mb-0" style="font-size:.8rem;">
+      &copy; 2024 DansLeBueno – Projet étudiant.
+    </p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Galerie : mise en surbrillance de la miniature sélectionnée
+  document.querySelectorAll('.gallery-thumb').forEach(thumb => {
+    thumb.addEventListener('click', function () {
+      document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      // PHP gérera les vraies URLs ; ici on simule
+      document.getElementById('mainImage').src = this.src.replace('w=100&h=78', 'w=900&h=520');
+    });
+  });
+</script>
+</body>
+</html>
